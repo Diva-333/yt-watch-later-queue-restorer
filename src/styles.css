@@ -1,0 +1,143 @@
+/* ─── YT Watch Later & Queue Buttons Restorer — styles.css ──────────────────
+   All injected UI elements are scoped under .ytr-* class names to avoid
+   clashing with YouTube's own styles.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --ytr-accent: #ff0000;
+  --ytr-transition: 0.15s ease;
+}
+
+/* ─── Thumbnail overlay buttons ──────────────────────────────────────────── */
+
+/*
+ * Each button is wrapped in a .ytr-btn-wrap div injected as a direct child of
+ * yt-thumbnail-view-model, positioned absolutely top-right, stacked above
+ * YouTube's native thumbnail-overlay-button-view-model (bottom-right).
+ *
+ * Stacking order (top to bottom on screen):
+ *   WL:    top: 8px
+ *   Queue: top: 52px  (8px + 40px button + 4px gap)
+ */
+.ytr-btn-wrap {
+  position: absolute;
+  right: 8px;
+  /* top is set inline per-button */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ytr-transition);
+  z-index: 100;
+}
+
+/* Show when the renderer is hovered — JS sets this class on mouseenter/mouseleave
+   on the full card renderer so it works even when YouTube's inline preview VIDEO
+   element sits on top and breaks CSS :hover. */
+yt-thumbnail-view-model.ytr-hovered .ytr-btn-wrap {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Hide thumbnail buttons while preview is playing — our buttons are in the
+   preview controls row instead. setupPreviewControlsObserver() sets this. */
+body.ytr-preview-playing .ytr-btn-wrap {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide our buttons when YouTube's own hover-overlay is present (e.g. video is
+   queued and YT shows its own WL/queue toggle buttons). Avoids doubling. */
+yt-thumbnail-view-model:has(yt-thumbnail-hover-overlay-toggle-actions-view-model) .ytr-btn-wrap {
+  display: none !important;
+}
+
+.ytr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background var(--ytr-transition), transform var(--ytr-transition);
+}
+
+.ytr-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.08);
+}
+
+.ytr-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.ytr-btn:focus-visible {
+  outline: 2px solid var(--ytr-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Inline preview player controls buttons ─────────────────────────────── */
+
+/* Wrapper matches YouTube's native circle-button wrapper: 40×40 clipping box
+   with 8px bottom margin. No background set here — YouTube's player CSS
+   handles that via the ytInlinePlayerControlsTopRightControlsCircleButton class,
+   exactly as it does for the native mute/CC buttons. */
+.ytInlinePlayerControlsTopRightControlsCircleButton.ytr-preview-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+/* Button element is 48×48 for extra hit area (overflows the 40×40 clipping
+   wrapper), SVG icon 24×24 — matching YouTube's native mute/CC buttons.
+   Background is transparent: the dark circle comes from YouTube's player CSS. */
+.ytr-preview-btn .ytr-btn {
+  width: 48px;
+  height: 48px;
+  background: transparent;
+}
+
+.ytr-preview-btn .ytr-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ─── Toast notification ─────────────────────────────────────────────────── */
+
+#ytr-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 10px 16px;
+  background: #282828;
+  color: #ffffff;
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#ytr-toast.ytr-toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#ytr-toast.ytr-toast--error {
+  background: #b00020;
+}
