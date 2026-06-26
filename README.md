@@ -45,3 +45,5 @@ The extension injects two scripts:
 - **`inject.js`** runs in the page's JS context — it invisibly opens YouTube's native "More actions" menu, clicks the relevant item, then closes the menu, so the action goes through YouTube's own logic
 
 This approach means Watch Later and Queue work exactly as they would through the native menu, with no API calls or workarounds needed.
+
+Based on (YT Restore — Queue & Watch Later)[https://github.com/CaptainCodeUK/yt-restore#yt-restore--queue--watch-later]
