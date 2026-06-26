@@ -46,4 +46,4 @@ The extension injects two scripts:
 
 This approach means Watch Later and Queue work exactly as they would through the native menu, with no API calls or workarounds needed.
 
-Based on (YT Restore — Queue & Watch Later)[https://github.com/CaptainCodeUK/yt-restore#yt-restore--queue--watch-later]
+Based on [YT Restore — Queue & Watch Later](https://github.com/CaptainCodeUK/yt-restore#yt-restore--queue--watch-later)
